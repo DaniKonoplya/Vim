@@ -2,6 +2,7 @@ source $VIMRUNTIME/vimrc_example.vim
 
 set diffexpr=MyDiff()
 function MyDiff()
+
   let opt = '-a --binary '
   if &diffopt =~ 'icase' | let opt = opt . '-i ' | endif
   if &diffopt =~ 'iwhite' | let opt = opt . '-b ' | endif
@@ -34,4 +35,57 @@ function MyDiff()
   endif
 endfunction
 
+" autocmd VimEnter * echo "<^.^>"
+set relativenumber
+set wrap
+" Cntrl+U uppercase word in Insert mode
+inoremap <c-u> <esc>0viwU<esc>$
+" Cntrl+U uppercase word inside Normal mode
+nnoremap <c-u> vimU<esc>
+"set leaders {{{
+let mapleader = "-"
+"set localleader 
+let maplocalleader = "\\"
+"delete line and enter to Insert mode
+"}}}
+nnoremap <leader>c ddO
+nnoremap <leader>ev :vsplit $MYVIMRC<cr>
+" surround string in quotes in visual mode 
+vnoremap <leader>" <esc>`>a"<esc>`<i"<esc>
+vnoremap <leader>' <esc>`>a'<esc>`<i'<esc>
+" more comfortable exit to a normal mode from insert mode 
+inoremap jk <esc>
+autocmd FileType powershell nnoremap <buffer> <localleader>c I#<esc>
+autocmd FileType cpp nnoremap <buffer> <localleader>c I//<esc>
 
+" python auto options {{{
+autocmd FileType python setlocal shiftwidth=2 softtabstop=2 expandtab
+autocmd FileType python     :iabbrev <buffer> iff if:<left>
+autocmd FileType python     :iabbrev <buffer> forr for i in range(,):<esc>0f,i
+autocmd FileType python     :iabbrev <buffer> whilee while :<esc>0fea
+autocmd FileType python nnoremap <buffer> <localleader>c I#<esc>
+" }}}
+
+augroup testgroup
+	autocmd!
+	autocmd FileType html nnoremap <buffer> <localleader>f Vatzf
+augroup END 
+
+function GTnum(line_count)
+	let l = 1
+	for ln in range(0,a:line_count)
+		let @b=string(l)
+		exec 's/\d\+/' . getreg('b')  .'/e' | normal! j
+		let l += 1
+	endfor
+endfunction
+
+" change title , possible delimeters -- or == 
+onoremap <buffer> ih :<c-u>execute "normal! ?^\\(--\\+$\\\|==\\+$\\)\r:nohlsearch\rkvg_"<cr>
+
+" Vimscript file settings ------------------------------{{{
+augroup filetype_vim
+	autocmd!
+	autocmd FileType vim setlocal foldmethod=marker
+augroup END
+" }}}
