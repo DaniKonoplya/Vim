@@ -132,8 +132,25 @@ augroup END
 	nnoremap <leader>cp :exe "cprevious"<cr>
 	" Toggle numeric and relativenumber only in the current window
 	nnoremap <leader>sw :exe "setlocal nu!"<cr><esc>:exe "setlocal rnu!"<cr><esc>	
+	" Delete all line aren't pertaining to errors.
+	nnoremap <leader>err :call Just_errors()<cr>
 
 " }}}
 "
+"
+"Function is used in logs. It deletes all lines aren't relevant to ERROR
+"messages.
+function Just_errors()
+	setlocal nowrapscan
+	exe "normal! gg"
+	for ln in range(0,100)
+		exe "normal! /word.*INF\<cr>3kmm/word.*ERR\<cr>3kmn`md`n"
+	endfor
+	setlocal wrapscan
+	exe "normal! dG\<cr>"
+
+endfunction
+
 " Example of various keys usage. 
 " execute "normal! 04j\<C-v>$2jx4kea\<tab>\<esc>p8jq:k\<cr>"
+
